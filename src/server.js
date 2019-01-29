@@ -15,7 +15,10 @@ bot.on('message', msg => {
   const hasSticker = !!msg.sticker;
   if (isGroup) {
     handleMessage(bot, msg);
+  } else if (hasSticker) {
+    handleStickerSend(bot, msg);
   } else {
-    hasSticker ? handleStickerSend(bot, msg) : handleMessageSend(bot, msg) ;
+    handleMessage(bot, msg);
+    handleMessageSend(bot, msg);
   }
 });

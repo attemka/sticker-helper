@@ -23,7 +23,10 @@ bot.on('message', function (msg) {
 
   if (isGroup) {
     (0, _groupMessages.handleMessage)(bot, msg);
+  } else if (hasSticker) {
+    (0, _chatMethods.handleStickerSend)(bot, msg);
   } else {
-    hasSticker ? (0, _chatMethods.handleStickerSend)(bot, msg) : (0, _chatMethods.handleMessageSend)(bot, msg);
+    (0, _groupMessages.handleMessage)(bot, msg);
+    (0, _chatMethods.handleMessageSend)(bot, msg);
   }
 });

@@ -32,6 +32,7 @@ export const handleMessageSend = (bot, msg) => {
           chatId,
           `К сожалению, данная фраза уже используется для стикера с id ${res.currentSearchword.parentStickerId}`
         );
+        bot.sendSticker(chatId, res.currentSearchword.parentStickerId);
       } else {
         bot.sendMessage(chatId, 'Ключевая фраза успешно добавлена');
       }

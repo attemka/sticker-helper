@@ -17,7 +17,7 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 var handleMessage = function handleMessage(bot, msg) {
   var chatId = msg.chat.id;
-  if (msg.chat.type !== 'group' && msg.chat.type !== 'supergroup' || !msg.text) return;
+  if (!msg.text) return;
   var msgText = msg.text;
 
   var _msgText$split = msgText.split(' '),
@@ -25,9 +25,9 @@ var handleMessage = function handleMessage(bot, msg) {
       mention = _msgText$split2[0],
       keyword = _msgText$split2.slice(1);
 
-  if (mention !== '@st') return;
+  if (mention.toLowerCase() !== '@st' && mention.toLowerCase() !== 'st') return;
   (0, _utils.getStickerByKeyword)(keyword.join(' ')).then(function (res) {
-    bot.sendSticker(chatId, res);
+    return res && bot.sendSticker(chatId, res);
   });
 };
 
