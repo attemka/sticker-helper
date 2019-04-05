@@ -33,6 +33,18 @@ var handleMessageSend = function handleMessageSend(bot, msg) {
   var chatId = msg.chat.id;
   if (msg.chat.type !== 'private' || !msg.text) return;
   var msgText = msg.text;
+
+  if (msgText === 'reloadStickerFiles') {
+    (0, _utils.getAllStickerIds)().then(function (stickerFileIds) {
+      console.log(stickerFileIds);
+      stickerFileIds.forEach(function (fileId) {
+        bot.downloadFile(fileId, "/data/stickers").then(function (path) {
+          (0, _utils.addStickerFilePath)(fileId, path);
+        });
+      });
+    });
+  }
+
   if (msgText.split(' ').length < 3) return;
 
   var _msgText$split = msgText.split(' '),
@@ -42,6 +54,13 @@ var handleMessageSend = function handleMessageSend(bot, msg) {
       keyword = _msgText$split2.slice(2);
 
   if (operation === 'add') {
+    (0, _utils.getStickerKeywords)(stickerId).then(function (words) {
+      if (!words.length) {
+        bot.downloadFile(stickerId, "/data/stickers/").then(function (res) {
+          return (0, _utils.addStickerFilePath)(stickerId, res);
+        });
+      }
+    });
     (0, _utils.addStickerKeyword)(stickerId, keyword.join(' ')).then(function (res) {
       if (res && res.error) {
         bot.sendMessage(chatId, "\u041A \u0441\u043E\u0436\u0430\u043B\u0435\u043D\u0438\u044E, \u0434\u0430\u043D\u043D\u0430\u044F \u0444\u0440\u0430\u0437\u0430 \u0443\u0436\u0435 \u0438\u0441\u043F\u043E\u043B\u044C\u0437\u0443\u0435\u0442\u0441\u044F \u0434\u043B\u044F \u0441\u0442\u0438\u043A\u0435\u0440\u0430 \u0441 id ".concat(res.currentSearchword.parentStickerId));

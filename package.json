@@ -15,7 +15,7 @@
     "@babel/core": "^7.2.2"
   },
   "scripts": {
-    "start": "node dist/src/server.js",
+    "start": "npm run build && node dist/src/server.js",
     "build": "babel src --out-dir dist/src && babel db --out-dir dist/db",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

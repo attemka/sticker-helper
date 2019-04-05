@@ -5,13 +5,14 @@ var _mongoose = _interopRequireDefault(require("mongoose"));
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var Schema = _mongoose.default.Schema;
-var searchword = Schema({
-  parentStickerId: String,
-  text: String,
-  stickerPath: {
+
+var stickers = _mongoose.default.Schema({
+  stickerId: String,
+  filePath: String,
+  searchWords: [{
     type: Schema.Types.ObjectId,
-    ref: 'Stickers'
-  }
+    ref: 'Searchword'
+  }]
 });
 
-_mongoose.default.model('Searchword', searchword);
+_mongoose.default.model('Stickers', stickers);

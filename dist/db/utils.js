@@ -3,11 +3,13 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.getStickerByKeyword = exports.deleteStickerKeyword = exports.addStickerKeyword = exports.getStickerKeywords = exports.setupConnection = void 0;
+exports.getPathByStickerId = exports.addStickerFilePath = exports.getStickerByKeyword = exports.getAllStickerIds = exports.deleteStickerKeyword = exports.addStickerKeyword = exports.getStickerKeywords = exports.setupConnection = void 0;
 
 var _mongoose = _interopRequireDefault(require("mongoose"));
 
 require("./models/searchword");
+
+require("./models/stickers");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -16,11 +18,14 @@ var db = _mongoose.default.connection; // const stickerpack = mongoose.model('st
 
 var searchwords = _mongoose.default.model('Searchword');
 
+var stickers = _mongoose.default.model('Stickers');
+
 db.on('error', console.error.bind(console, 'connection error:'));
 
 var setupConnection = function setupConnection() {
-  return _mongoose.default.connect('mongodb://localhost:27017/BOT_DB');
-};
+  return _mongoose.default.connect('mongodb://127.0.0.1:27017/BOT_DB');
+}; // mongoose.connect('mongodb://localhost:27017/BOT_DB');
+
 
 exports.setupConnection = setupConnection;
 
@@ -71,6 +76,18 @@ var deleteStickerKeyword = function deleteStickerKeyword(stickerId, keyword) {
 
 exports.deleteStickerKeyword = deleteStickerKeyword;
 
+var getAllStickerIds = function getAllStickerIds() {
+  return searchwords.distinct('parentStickerId', function (err, res) {
+    if (err) {
+      return err;
+    }
+
+    return res;
+  });
+};
+
+exports.getAllStickerIds = getAllStickerIds;
+
 var getStickerByKeyword = function getStickerByKeyword(keyword) {
   return searchwords.findOne({
     text: keyword
@@ -80,3 +97,22 @@ var getStickerByKeyword = function getStickerByKeyword(keyword) {
 };
 
 exports.getStickerByKeyword = getStickerByKeyword;
+
+var addStickerFilePath = function addStickerFilePath(stickerId, filePath) {
+  var newSticker = new stickers({
+    stickerId: stickerId,
+    filePath: filePath
+  });
+  return newSticker.save();
+};
+
+exports.addStickerFilePath = addStickerFilePath;
+
+var getPathByStickerId = function getPathByStickerId(id) {
+  var sticker = stickers.findOne({
+    stickerId: id
+  });
+  return sticker && sticker.filePath;
+};
+
+exports.getPathByStickerId = getPathByStickerId;
